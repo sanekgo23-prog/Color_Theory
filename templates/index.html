@@ -1,0 +1,78 @@
+{% extends "base.html" %}
+{% block title %}Генератор палитр{% endblock %}
+{% block content %}
+<div class="site-header text-center mb-4">
+    <h1 class="site-title">Color Theory</h1>
+    <p class="site-subtitle">Генератор гармоничных цветовых палитр</p>
+</div>
+
+<div class="main-container d-flex justify-content-center align-items-start gap-5 flex-wrap">
+    <div class="left-section">
+        <svg id="ring-svg" viewBox="0 0 480 480" width="480" height="480">
+            <!-- Заголовок убран -->
+            <g id="segments-group"></g>
+            <circle cx="240" cy="240" r="92" fill="#0b0c1e" id="inner-hole"/>
+            <text x="240" y="235" text-anchor="middle" fill="white" font-family="'Segoe UI', 'Inter', sans-serif" font-size="14" font-weight="bold" id="color-count-text">5 цветов</text>
+            <text x="240" y="255" text-anchor="middle" fill="rgba(255,255,255,0.25)" font-family="'Segoe UI', 'Inter', sans-serif" font-size="10" font-weight="400" id="mode-text">Аналоговая</text>
+        </svg>
+    </div>
+
+    <div class="right-panel">
+        <h2 class="panel-title">Режим гармонии</h2>
+        <div class="mode-grid">
+            <button data-mode="analogous" class="mode-btn" title="Аналоговая">≋</button>
+            <button data-mode="complementary" class="mode-btn" title="Комплементарная">⇆</button>
+            <button data-mode="triadic" class="mode-btn" title="Триада">△</button>
+            <button data-mode="tetradic" class="mode-btn" title="Тетрада">□</button>
+            <button data-mode="monochromatic" class="mode-btn" title="Монохромная">◉</button>
+            <button data-mode="pastel" class="mode-btn" title="Пастельная">🌸</button>
+        </div>
+        <button id="random-mode" class="random-btn-full">🎲 Случайный режим</button>
+        <div id="mode-description" class="mode-description"></div>
+
+        <!-- Тонкая настройка -->
+        <div class="tuning-section mt-3">
+            <div id="tuning-toggle" class="tuning-header">
+                <span>Тонкая настройка</span>
+                <span id="toggle-icon" class="toggle-icon">▸</span>
+            </div>
+            <div id="tuning-content" class="tuning-content" style="display: none;">
+                <div class="slider-group">
+                    <label for="count-slider">Цветов: <span id="count-value">5</span></label>
+                    <input type="range" id="count-slider" min="2" max="10" value="5" step="1">
+                </div>
+                <div class="slider-group">
+                    <label for="sat-slider">Насыщенность: <span id="sat-value">70</span></label>
+                    <input type="range" id="sat-slider" min="0" max="100" value="70" step="1">
+                </div>
+                <div class="slider-group">
+                    <label for="light-slider">Яркость: <span id="light-value">50</span></label>
+                    <input type="range" id="light-slider" min="0" max="100" value="50" step="1">
+                </div>
+                <button id="generate-btn" class="generate-btn">✨ Сгенерировать</button>
+            </div>
+        </div>
+
+        {% if current_user.is_authenticated %}
+        <div class="save-panel mt-3">
+            <input type="text" id="palette-name" class="form-control form-control-sm mb-2" placeholder="Название палитры">
+            <div class="form-check form-switch mb-2">
+                <input class="form-check-input" type="checkbox" id="is-public" checked>
+                <label class="form-check-label" for="is-public">Публичная</label>
+            </div>
+            <button id="save-palette-btn" class="btn-purple w-100">💾 Сохранить</button>
+        </div>
+        {% else %}
+        <div class="alert alert-secondary mt-3 text-center small">
+            <a href="{{ url_for('login') }}">Войдите</a> или <a href="{{ url_for('register') }}">зарегистрируйтесь</a>, чтобы сохранять палитры.
+        </div>
+        {% endif %}
+    </div>
+</div>
+
+<div id="legend" class="legend mt-4"></div>
+{% endblock %}
+
+{% block extra_scripts %}
+<!-- script.js подключён в base.html -->
+{% endblock %}

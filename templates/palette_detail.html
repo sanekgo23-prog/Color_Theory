@@ -1,0 +1,41 @@
+{% extends "base.html" %}
+{% block title %}{{ palette.name }}{% endblock %}
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-lg-8">
+        <a href="javascript:history.back()" class="btn btn-sm btn-outline-light mb-3">← Назад</a>
+        <div class="card bg-dark border-secondary">
+            <div class="card-body">
+                <h2 class="card-title">{{ palette.name }}</h2>
+                <p class="text-muted">
+                    Автор: {{ palette.author.username }} &middot; {{ palette.created_at.strftime('%d.%m.%Y в %H:%M') }}
+                </p>
+                <p>Режим: <span class="badge bg-purple">{{ palette.mode or 'Не указан' }}</span></p>
+
+                <!-- Визуализация палитры кольцом (можно SVG или просто полоски) -->
+                <div class="colors-display mb-4">
+                    {% for color in palette.get_colors() %}
+                    <div class="color-block" style="background-color: {{ color }}; width: 60px; height: 60px; display: inline-block; border-radius: 12px; margin-right: 4px; box-shadow: 0 4px 10px rgba(0,0,0,0.3);" title="{{ color }}"></div>
+                    {% endfor %}
+                </div>
+
+                <h5>HEX-коды</h5>
+                <div class="d-flex flex-wrap gap-2">
+                    {% for color in palette.get_colors() %}
+                    <span class="badge bg-dark border border-secondary px-3 py-2" style="font-family: 'JetBrains Mono', monospace; cursor: pointer;"
+                          onclick="copyToClipboard('{{ color }}')">{{ color }}</span>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+function copyToClipboard(text) {
+    navigator.clipboard.writeText(text).then(() => {
+        alert('Скопирован ' + text);
+    });
+}
+</script>
+{% endblock %}

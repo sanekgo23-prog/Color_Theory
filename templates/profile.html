@@ -1,0 +1,50 @@
+{% extends "base.html" %}
+{% block title %}Мой профиль{% endblock %}
+{% block content %}
+<div class="row">
+    <div class="col-md-4 mb-4">
+        <div class="card bg-dark border-secondary text-light">
+            <div class="card-body text-center">
+                <img src="{{ url_for('static', filename='../uploads/' + current_user.avatar) if current_user.avatar else url_for('static', filename='default.png') }}"
+                     alt="Аватар" class="rounded-circle mb-3" width="120" height="120" style="object-fit: cover;">
+                <h4>{{ current_user.username }}</h4>
+                <p class="text-muted">{{ current_user.email }}</p>
+                <p class="small">Участник с {{ current_user.created_at.strftime('%d.%m.%Y') }}</p>
+                <a href="{{ url_for('index') }}" class="btn btn-sm btn-outline-purple">Создать новую палитру</a>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-8">
+        <h3>Мои палитры</h3>
+        {% if palettes %}
+            <div class="row row-cols-1 row-cols-md-2 g-3">
+                {% for palette in palettes %}
+                <div class="col">
+                    <div class="card bg-dark border-secondary h-100">
+                        <div class="card-body">
+                            <div class="d-flex mb-2">
+                                {% for color in palette.get_colors() %}
+                                <div class="color-swatch-sm me-1" style="background-color: {{ color }}; width: 20px; height: 20px; border-radius: 4px;" title="{{ color }}"></div>
+                                {% endfor %}
+                            </div>
+                            <h5 class="card-title text-light">{{ palette.name }}</h5>
+                            <p class="card-text small text-muted">
+                                {{ palette.mode or 'Без режима' }} &middot; {{ palette.created_at.strftime('%d.%m.%Y %H:%M') }}
+                            </p>
+                            <div class="d-flex justify-content-between">
+                                <a href="{{ url_for('palette_detail', id=palette.id) }}" class="btn btn-sm btn-outline-light">Посмотреть</a>
+                                <form action="{{ url_for('delete_palette', id=palette.id) }}" method="POST" onsubmit="return confirm('Удалить палитру?')">
+                                    <button class="btn btn-sm btn-outline-danger">Удалить</button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        {% else %}
+            <div class="alert alert-secondary">У вас пока нет сохранённых палитр. <a href="{{ url_for('index') }}">Сгенерируйте первую!</a></div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

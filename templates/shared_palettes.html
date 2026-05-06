@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+{% block title %}Общие палитры{% endblock %}
+{% block content %}
+<h2 class="mb-4">Общие палитры</h2>
+{% if palettes %}
+    <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 g-3">
+        {% for palette in palettes %}
+        <div class="col">
+            <div class="card bg-dark border-secondary h-100">
+                <div class="card-body">
+                    <div class="d-flex mb-2">
+                        {% for color in palette.get_colors()[:5] %}
+                        <div class="color-swatch-sm me-1" style="background-color: {{ color }}; width: 20px; height: 20px; border-radius: 4px;"></div>
+                        {% endfor %}
+                        {% if palette.get_colors()|length > 5 %}
+                        <span class="text-muted small">+{{ palette.get_colors()|length - 5 }}</span>
+                        {% endif %}
+                    </div>
+                    <h5 class="card-title text-light">{{ palette.name }}</h5>
+                    <p class="card-text small text-muted">
+                        {{ palette.author.username }} &middot; {{ palette.created_at.strftime('%d.%m.%Y') }}
+                    </p>
+                    <a href="{{ url_for('palette_detail', id=palette.id) }}" class="btn btn-sm btn-outline-light">Открыть</a>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+{% else %}
+    <div class="alert alert-secondary">Публичных палитр пока нет. Будьте первым, кто поделится своей гармонией!</div>
+{% endif %}
+{% endblock %}
